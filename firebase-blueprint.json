@@ -1,0 +1,441 @@
+{
+  "entities": {
+    "WebsiteSettings": {
+      "title": "WebsiteSettings",
+      "description": "Public business profile, logo, hero content, and business hours configuration for MUN COMPUTER.",
+      "type": "object",
+      "properties": {
+        "businessName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "businessType": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "logoDataUrl": { "type": "string", "maxLength": 350000 },
+        "faviconDataUrl": { "type": "string", "maxLength": 120000 },
+        "heroHeading": { "type": "string", "minLength": 2, "maxLength": 160 },
+        "heroSubtitle": { "type": "string", "minLength": 2, "maxLength": 220 },
+        "heroDescription": { "type": "string", "minLength": 2, "maxLength": 600 },
+        "heroImageUrl": { "type": "string", "maxLength": 500 },
+        "aboutIntro": { "type": "string", "maxLength": 2000 },
+        "mission": { "type": "string", "maxLength": 1000 },
+        "vision": { "type": "string", "maxLength": 1000 },
+        "serviceCommitment": { "type": "string", "maxLength": 1000 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "whatsapp": { "type": "string", "maxLength": 30 },
+        "email": { "type": "string", "maxLength": 120 },
+        "village": { "type": "string", "maxLength": 80 },
+        "postOffice": { "type": "string", "maxLength": 80 },
+        "policeStation": { "type": "string", "maxLength": 80 },
+        "district": { "type": "string", "maxLength": 80 },
+        "state": { "type": "string", "maxLength": 80 },
+        "country": { "type": "string", "maxLength": 80 },
+        "pinCode": { "type": "string", "maxLength": 16 },
+        "businessHoursConfigured": { "type": "boolean" },
+        "openingTime": { "type": "string", "maxLength": 30 },
+        "closingTime": { "type": "string", "maxLength": 30 },
+        "weeklyHolidays": { "type": "array", "description": "Max 7 weekday strings" },
+        "specialHolidayNotice": { "type": "string", "maxLength": 400 },
+        "temporaryClosureNotice": { "type": "string", "maxLength": 400 },
+        "shopLat": { "type": "number", "description": "Saved shop GPS latitude (-90 to 90)" },
+        "shopLng": { "type": "number", "description": "Saved shop GPS longitude (-180 to 180)" },
+        "shopMapAddress": { "type": "string", "maxLength": 300 },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": [
+        "businessName",
+        "businessType",
+        "heroHeading",
+        "heroSubtitle",
+        "heroDescription",
+        "phone",
+        "whatsapp",
+        "email",
+        "businessHoursConfigured",
+        "updatedAt",
+        "updatedBy"
+      ]
+    },
+    "PublicService": {
+      "title": "PublicService",
+      "description": "Publicly approved service information without internal pricing, commission, or profit margins.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "category": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "shortDescription": { "type": "string", "minLength": 5, "maxLength": 300 },
+        "fullDescription": { "type": "string", "maxLength": 1500 },
+        "requiredDocuments": { "type": "string", "maxLength": 600 },
+        "isActive": { "type": "boolean" },
+        "sortOrder": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": [
+        "title",
+        "category",
+        "shortDescription",
+        "isActive",
+        "sortOrder",
+        "updatedAt",
+        "updatedBy"
+      ]
+    },
+    "ServiceInternal": {
+      "title": "ServiceInternal",
+      "description": "Protected internal service fee, commission, and cost configuration for authorized staff.",
+      "type": "object",
+      "properties": {
+        "serviceId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 140 },
+        "category": { "type": "string", "maxLength": 100 },
+        "serviceCharge": { "type": "number" },
+        "govtFee": { "type": "number" },
+        "commission": { "type": "number" },
+        "employeeCost": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["serviceId", "title", "category", "serviceCharge", "commission", "updatedAt", "updatedBy"]
+    },
+    "PublicNotice": {
+      "title": "PublicNotice",
+      "description": "Notice board announcement; only published notices are visible to the public.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 3, "maxLength": 160 },
+        "description": { "type": "string", "minLength": 5, "maxLength": 3000 },
+        "category": {
+          "type": "string",
+          "enum": [
+            "Business Announcement",
+            "Service Notice",
+            "Holiday Notice",
+            "Customer Information",
+            "General Update"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "published", "archived"]
+        },
+        "isExpired": { "type": "boolean" },
+        "expiresAt": { "type": "string", "maxLength": 40 },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": [
+        "title",
+        "description",
+        "category",
+        "status",
+        "isExpired",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ]
+    },
+    "CustomerFeedback": {
+      "title": "CustomerFeedback",
+      "description": "Private customer feedback submissions stored securely with NEW status for admin review.",
+      "type": "object",
+      "properties": {
+        "feedbackCode": { "type": "string", "pattern": "^MC-FB-[A-Z0-9]+$", "maxLength": 32 },
+        "customerName": { "type": "string", "maxLength": 100 },
+        "mobileNumber": { "type": "string", "maxLength": 20 },
+        "serviceCategory": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "serviceReferenceId": { "type": "string", "maxLength": 64 },
+        "rating": { "type": "integer" },
+        "message": { "type": "string", "minLength": 5, "maxLength": 2000 },
+        "publicationConsent": { "type": "boolean" },
+        "status": {
+          "type": "string",
+          "enum": ["NEW", "UNDER_REVIEW", "APPROVED", "REJECTED", "ARCHIVED"]
+        },
+        "adminResponse": { "type": "string", "maxLength": 1000 },
+        "reviewedBy": { "type": "string", "maxLength": 128 },
+        "reviewedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "feedbackCode",
+        "serviceCategory",
+        "rating",
+        "message",
+        "publicationConsent",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PublicReview": {
+      "title": "PublicReview",
+      "description": "Admin-approved and customer-consented public reviews stripped of any private PII or mobile numbers.",
+      "type": "object",
+      "properties": {
+        "feedbackId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "serviceCategory": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "rating": { "type": "integer" },
+        "message": { "type": "string", "minLength": 5, "maxLength": 2000 },
+        "adminResponse": { "type": "string", "maxLength": 1000 },
+        "approvedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "publishedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": [
+        "feedbackId",
+        "displayName",
+        "serviceCategory",
+        "rating",
+        "message",
+        "approvedAt",
+        "createdAt",
+        "publishedBy"
+      ]
+    },
+    "ContactEnquiry": {
+      "title": "ContactEnquiry",
+      "description": "Private customer contact enquiries submitted from the public contact page.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 20 },
+        "email": { "type": "string", "maxLength": 120 },
+        "serviceCategory": { "type": "string", "maxLength": 100 },
+        "subject": { "type": "string", "minLength": 3, "maxLength": 160 },
+        "message": { "type": "string", "minLength": 5, "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["NEW", "IN_PROGRESS", "RESOLVED"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "subject", "message", "status", "createdAt", "updatedAt"]
+    },
+    "StaffUser": {
+      "title": "StaffUser",
+      "description": "Authorized staff, manager, and admin profiles with role permissions and registered device fingerprints.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 120 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["admin", "manager", "staff"] },
+        "status": { "type": "string", "enum": ["active", "suspended"] },
+        "registeredDevices": { "type": "array", "description": "Max 10 trusted device IDs" },
+        "lastLoginAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "status", "createdAt", "updatedAt"]
+    },
+    "AdminMarker": {
+      "title": "AdminMarker",
+      "description": "Trusted admin UID registry.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 120 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "CustomerRecord": {
+      "title": "CustomerRecord",
+      "description": "Protected customer directory record inside MUN COMPUTER Business Manager.",
+      "type": "object",
+      "properties": {
+        "fullName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "mobile": { "type": "string", "maxLength": 20 },
+        "village": { "type": "string", "maxLength": 120 },
+        "notes": { "type": "string", "maxLength": 600 },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fullName", "mobile", "createdBy", "createdAt", "updatedAt"]
+    },
+    "ServiceApplication": {
+      "title": "ServiceApplication",
+      "description": "Protected customer application tracking record.",
+      "type": "object",
+      "properties": {
+        "referenceId": { "type": "string", "maxLength": 64 },
+        "customerName": { "type": "string", "maxLength": 120 },
+        "mobile": { "type": "string", "maxLength": 20 },
+        "serviceCategory": { "type": "string", "maxLength": 100 },
+        "serviceTitle": { "type": "string", "maxLength": 140 },
+        "status": { "type": "string", "enum": ["Pending", "In Process", "Completed", "Delivered", "Cancelled"] },
+        "feeCollected": { "type": "number" },
+        "notes": { "type": "string", "maxLength": 600 },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["referenceId", "customerName", "serviceCategory", "serviceTitle", "status", "feeCollected", "createdBy", "createdAt", "updatedAt"]
+    },
+    "LedgerEntry": {
+      "title": "LedgerEntry",
+      "description": "Cashbook, daybook, income, expense, and payment ledger transaction.",
+      "type": "object",
+      "properties": {
+        "entryType": { "type": "string", "enum": ["Income", "Expense", "Payment Received", "Payment Due", "Refund"] },
+        "category": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 300 },
+        "amount": { "type": "number" },
+        "paymentMode": { "type": "string", "enum": ["Cash", "UPI", "Bank Transfer", "Card"] },
+        "dateStr": { "type": "string", "maxLength": 20 },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["entryType", "category", "description", "amount", "paymentMode", "dateStr", "createdBy", "createdAt"]
+    },
+    "MasterSettings": {
+      "title": "MasterSettings",
+      "description": "Internal ERP regional formatting, numbering prefixes, print templates, and session security configuration.",
+      "type": "object",
+      "properties": {
+        "currencyCode": { "type": "string", "maxLength": 10 },
+        "currencySymbol": { "type": "string", "maxLength": 8 },
+        "locale": { "type": "string", "maxLength": 20 },
+        "dateFormat": { "type": "string", "maxLength": 24 },
+        "timezone": { "type": "string", "maxLength": 40 },
+        "financialYearStartMonth": { "type": "integer" },
+        "applicationPrefix": { "type": "string", "maxLength": 12 },
+        "receiptPrefix": { "type": "string", "maxLength": 12 },
+        "invoicePrefix": { "type": "string", "maxLength": 12 },
+        "paperSize": { "type": "string", "enum": ["A4"] },
+        "inactivityTimeoutMinutes": { "type": "integer" },
+        "receiptFooterNote": { "type": "string", "maxLength": 400 },
+        "showDisclaimerOnPrint": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": [
+        "currencyCode",
+        "currencySymbol",
+        "locale",
+        "dateFormat",
+        "timezone",
+        "financialYearStartMonth",
+        "applicationPrefix",
+        "receiptPrefix",
+        "invoicePrefix",
+        "paperSize",
+        "inactivityTimeoutMinutes",
+        "showDisclaimerOnPrint",
+        "updatedAt",
+        "updatedBy"
+      ]
+    },
+    "LpgRecord": {
+      "title": "LpgRecord",
+      "description": "LPG & Gas booking assistance record.",
+      "type": "object",
+      "properties": {
+        "consumerName": { "type": "string", "maxLength": 120 },
+        "consumerNumber": { "type": "string", "maxLength": 40 },
+        "agencyName": { "type": "string", "maxLength": 100 },
+        "bookingType": { "type": "string", "enum": ["Refill Booking", "e-KYC", "New Connection", "Subsidy Check"] },
+        "status": { "type": "string", "enum": ["Booked", "Pending", "Completed"] },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["consumerName", "consumerNumber", "agencyName", "bookingType", "status", "createdBy", "createdAt"]
+    },
+    "InventoryItem": {
+      "title": "InventoryItem",
+      "description": "Office supplies, printing paper, toner, and stationery stock item.",
+      "type": "object",
+      "properties": {
+        "itemName": { "type": "string", "maxLength": 120 },
+        "category": { "type": "string", "maxLength": 80 },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 30 },
+        "reorderLevel": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["itemName", "category", "quantity", "unit", "reorderLevel", "updatedAt", "updatedBy"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable security and administrative action audit log.",
+      "type": "object",
+      "properties": {
+        "action": { "type": "string", "maxLength": 120 },
+        "module": { "type": "string", "maxLength": 80 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "details": { "type": "string", "maxLength": 600 },
+        "actorUid": { "type": "string", "maxLength": 128 },
+        "actorEmail": { "type": "string", "maxLength": 120 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["action", "module", "targetId", "details", "actorUid", "actorEmail", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/website_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/WebsiteSettings" },
+      "description": "Public website settings document (main)."
+    },
+    "/master_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/MasterSettings" },
+      "description": "Protected ERP master settings document (main)."
+    },
+    "/public_services/{serviceId}": {
+      "schema": { "$ref": "#/entities/PublicService" },
+      "description": "Publicly visible service catalogue entries."
+    },
+    "/service_internals/{serviceId}": {
+      "schema": { "$ref": "#/entities/ServiceInternal" },
+      "description": "Internal service rates, commissions, and costs."
+    },
+    "/public_notices/{noticeId}": {
+      "schema": { "$ref": "#/entities/PublicNotice" },
+      "description": "Notice board entries; published items are public."
+    },
+    "/customer_feedback/{feedbackId}": {
+      "schema": { "$ref": "#/entities/CustomerFeedback" },
+      "description": "Private customer feedback submissions."
+    },
+    "/public_reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/PublicReview" },
+      "description": "Admin-approved, customer-consented public reviews."
+    },
+    "/contact_enquiries/{enquiryId}": {
+      "schema": { "$ref": "#/entities/ContactEnquiry" },
+      "description": "Private customer contact enquiries."
+    },
+    "/staff_users/{uid}": {
+      "schema": { "$ref": "#/entities/StaffUser" },
+      "description": "Authorized business manager staff, managers, and admins."
+    },
+    "/admins/{uid}": {
+      "schema": { "$ref": "#/entities/AdminMarker" },
+      "description": "Trusted admin UID registry."
+    },
+    "/customers/{customerId}": {
+      "schema": { "$ref": "#/entities/CustomerRecord" },
+      "description": "Private customer records."
+    },
+    "/applications/{applicationId}": {
+      "schema": { "$ref": "#/entities/ServiceApplication" },
+      "description": "Private customer service applications."
+    },
+    "/ledger_entries/{entryId}": {
+      "schema": { "$ref": "#/entities/LedgerEntry" },
+      "description": "Business cashbook, daybook, and ledger entries."
+    },
+    "/lpg_records/{recordId}": {
+      "schema": { "$ref": "#/entities/LpgRecord" },
+      "description": "LPG booking assistance records."
+    },
+    "/inventory_items/{itemId}": {
+      "schema": { "$ref": "#/entities/InventoryItem" },
+      "description": "Center stock and inventory items."
+    },
+    "/audit_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Immutable administrative and feedback review audit logs."
+    }
+  }
+}

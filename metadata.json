@@ -1,0 +1,8 @@
+{
+  "name": "FINAL ONLY WEB SITE",
+  "description": "Official corporate website, customer feedback portal, public notice board, and integrated Business Manager for MUN COMPUTER — Digital Service \u0026 Computer Solutions Centre.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

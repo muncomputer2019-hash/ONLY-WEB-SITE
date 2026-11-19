@@ -1,0 +1,598 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // =========================================================
+    // GLOBAL HELPER PRIMITIVES
+    // =========================================================
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isBootstrappedAdmin() {
+      return isVerifiedUser() && (
+        request.auth.token.email == 'muncomputer2021@gmail.com' ||
+        request.auth.token.email == 'muncomputer2019@gmail.com'
+      );
+    }
+
+    function isAdmin() {
+      return isBootstrappedAdmin() || (
+        isVerifiedUser() && (
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+          (
+            exists(/databases/$(database)/documents/staff_users/$(request.auth.uid)) &&
+            get(/databases/$(database)/documents/staff_users/$(request.auth.uid)).data.role == 'admin' &&
+            get(/databases/$(database)/documents/staff_users/$(request.auth.uid)).data.status == 'active'
+          )
+        )
+      );
+    }
+
+    function isManagerOrAdmin() {
+      return isAdmin() || (
+        isVerifiedUser() &&
+        exists(/databases/$(database)/documents/staff_users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/staff_users/$(request.auth.uid)).data.status == 'active' &&
+        get(/databases/$(database)/documents/staff_users/$(request.auth.uid)).data.role in ['admin', 'manager']
+      );
+    }
+
+    function isStaff() {
+      return isAdmin() || (
+        isVerifiedUser() &&
+        exists(/databases/$(database)/documents/staff_users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/staff_users/$(request.auth.uid)).data.status == 'active' &&
+        get(/databases/$(database)/documents/staff_users/$(request.auth.uid)).data.role in ['admin', 'manager', 'staff']
+      );
+    }
+
+    function isOptionalString(data, key, maxLen) {
+      return !(key in data) || (data[key] is string && data[key].size() <= maxLen);
+    }
+
+    // =========================================================
+    // VALIDATION BLUEPRINTS
+    // =========================================================
+
+    function isValidWebsiteSettings(data) {
+      return data.keys().hasAll([
+        'businessName', 'businessType', 'heroHeading', 'heroSubtitle',
+        'heroDescription', 'phone', 'whatsapp', 'email',
+        'businessHoursConfigured', 'updatedAt', 'updatedBy'
+      ]) &&
+      data.keys().hasOnly([
+        'businessName', 'businessType', 'logoDataUrl', 'faviconDataUrl',
+        'heroHeading', 'heroSubtitle', 'heroDescription', 'heroImageUrl',
+        'aboutIntro', 'mission', 'vision', 'serviceCommitment',
+        'phone', 'whatsapp', 'email', 'village', 'postOffice',
+        'policeStation', 'district', 'state', 'country', 'pinCode',
+        'businessHoursConfigured', 'openingTime', 'closingTime',
+        'weeklyHolidays', 'specialHolidayNotice', 'temporaryClosureNotice',
+        'shopLat', 'shopLng', 'shopMapAddress',
+        'updatedAt', 'updatedBy'
+      ]) &&
+      data.businessName is string && data.businessName.size() >= 2 && data.businessName.size() <= 100 &&
+      data.businessType is string && data.businessType.size() >= 2 && data.businessType.size() <= 160 &&
+      data.heroHeading is string && data.heroHeading.size() >= 2 && data.heroHeading.size() <= 160 &&
+      data.heroSubtitle is string && data.heroSubtitle.size() >= 2 && data.heroSubtitle.size() <= 220 &&
+      data.heroDescription is string && data.heroDescription.size() >= 2 && data.heroDescription.size() <= 600 &&
+      data.phone is string && data.phone.size() >= 5 && data.phone.size() <= 30 &&
+      data.whatsapp is string && data.whatsapp.size() >= 5 && data.whatsapp.size() <= 30 &&
+      data.email is string && data.email.size() >= 5 && data.email.size() <= 120 &&
+      data.businessHoursConfigured is bool &&
+      data.updatedAt == request.time &&
+      data.updatedBy is string && data.updatedBy == request.auth.uid &&
+      isOptionalString(data, 'logoDataUrl', 350000) &&
+      isOptionalString(data, 'faviconDataUrl', 120000) &&
+      isOptionalString(data, 'heroImageUrl', 500) &&
+      isOptionalString(data, 'aboutIntro', 2000) &&
+      isOptionalString(data, 'mission', 1000) &&
+      isOptionalString(data, 'vision', 1000) &&
+      isOptionalString(data, 'serviceCommitment', 1000) &&
+      isOptionalString(data, 'village', 80) &&
+      isOptionalString(data, 'postOffice', 80) &&
+      isOptionalString(data, 'policeStation', 80) &&
+      isOptionalString(data, 'district', 80) &&
+      isOptionalString(data, 'state', 80) &&
+      isOptionalString(data, 'country', 80) &&
+      isOptionalString(data, 'pinCode', 16) &&
+      isOptionalString(data, 'openingTime', 30) &&
+      isOptionalString(data, 'closingTime', 30) &&
+      isOptionalString(data, 'specialHolidayNotice', 400) &&
+      isOptionalString(data, 'temporaryClosureNotice', 400) &&
+      isOptionalString(data, 'shopMapAddress', 300) &&
+      (!('shopLat' in data) || (data.shopLat is number && data.shopLat >= -90 && data.shopLat <= 90)) &&
+      (!('shopLng' in data) || (data.shopLng is number && data.shopLng >= -180 && data.shopLng <= 180)) &&
+      (!('weeklyHolidays' in data) || (
+        data.weeklyHolidays is list &&
+        data.weeklyHolidays.size() <= 7 &&
+        (data.weeklyHolidays.size() == 0 || data.weeklyHolidays[0] is string)
+      ));
+    }
+
+    function isValidMasterSettings(data) {
+      return data.keys().hasAll([
+        'currencyCode', 'currencySymbol', 'locale', 'dateFormat', 'timezone',
+        'financialYearStartMonth', 'applicationPrefix', 'receiptPrefix', 'invoicePrefix',
+        'paperSize', 'inactivityTimeoutMinutes', 'showDisclaimerOnPrint',
+        'updatedAt', 'updatedBy'
+      ]) &&
+      data.keys().hasOnly([
+        'currencyCode', 'currencySymbol', 'locale', 'dateFormat', 'timezone',
+        'financialYearStartMonth', 'applicationPrefix', 'receiptPrefix', 'invoicePrefix',
+        'paperSize', 'inactivityTimeoutMinutes', 'receiptFooterNote', 'showDisclaimerOnPrint',
+        'updatedAt', 'updatedBy'
+      ]) &&
+      data.currencyCode is string && data.currencyCode.size() >= 3 && data.currencyCode.size() <= 10 &&
+      data.currencySymbol is string && data.currencySymbol.size() >= 1 && data.currencySymbol.size() <= 8 &&
+      data.locale is string && data.locale.size() >= 2 && data.locale.size() <= 20 &&
+      data.dateFormat is string && data.dateFormat.size() >= 6 && data.dateFormat.size() <= 24 &&
+      data.timezone is string && data.timezone.size() >= 3 && data.timezone.size() <= 40 &&
+      data.financialYearStartMonth is int && data.financialYearStartMonth >= 1 && data.financialYearStartMonth <= 12 &&
+      data.applicationPrefix is string && data.applicationPrefix.size() >= 2 && data.applicationPrefix.size() <= 12 &&
+      data.receiptPrefix is string && data.receiptPrefix.size() >= 2 && data.receiptPrefix.size() <= 12 &&
+      data.invoicePrefix is string && data.invoicePrefix.size() >= 2 && data.invoicePrefix.size() <= 12 &&
+      data.paperSize == 'A4' &&
+      data.inactivityTimeoutMinutes is int && data.inactivityTimeoutMinutes >= 5 && data.inactivityTimeoutMinutes <= 240 &&
+      isOptionalString(data, 'receiptFooterNote', 400) &&
+      data.showDisclaimerOnPrint is bool &&
+      data.updatedAt == request.time &&
+      data.updatedBy is string && data.updatedBy == request.auth.uid;
+    }
+
+    function isValidPublicService(data) {
+      return data.keys().hasAll([
+        'title', 'category', 'shortDescription', 'isActive', 'sortOrder', 'updatedAt', 'updatedBy'
+      ]) &&
+      data.keys().hasOnly([
+        'title', 'category', 'shortDescription', 'fullDescription',
+        'requiredDocuments', 'isActive', 'sortOrder', 'updatedAt', 'updatedBy'
+      ]) &&
+      data.title is string && data.title.size() >= 2 && data.title.size() <= 140 &&
+      data.category is string && data.category.size() >= 2 && data.category.size() <= 100 &&
+      data.shortDescription is string && data.shortDescription.size() >= 5 && data.shortDescription.size() <= 300 &&
+      isOptionalString(data, 'fullDescription', 1500) &&
+      isOptionalString(data, 'requiredDocuments', 600) &&
+      data.isActive is bool &&
+      data.sortOrder is number &&
+      data.updatedAt == request.time &&
+      data.updatedBy == request.auth.uid;
+    }
+
+    function isValidServiceInternal(data) {
+      return data.keys().hasAll([
+        'serviceId', 'title', 'category', 'serviceCharge', 'commission', 'updatedAt', 'updatedBy'
+      ]) &&
+      data.keys().hasOnly([
+        'serviceId', 'title', 'category', 'serviceCharge', 'govtFee',
+        'commission', 'employeeCost', 'updatedAt', 'updatedBy'
+      ]) &&
+      isValidId(data.serviceId) &&
+      data.title is string && data.title.size() >= 2 && data.title.size() <= 140 &&
+      data.category is string && data.category.size() >= 2 && data.category.size() <= 100 &&
+      data.serviceCharge is number && data.serviceCharge >= 0 &&
+      data.commission is number && data.commission >= 0 &&
+      (!('govtFee' in data) || (data.govtFee is number && data.govtFee >= 0)) &&
+      (!('employeeCost' in data) || (data.employeeCost is number && data.employeeCost >= 0)) &&
+      data.updatedAt == request.time &&
+      data.updatedBy == request.auth.uid;
+    }
+
+    function isValidNotice(data) {
+      return data.keys().hasAll([
+        'title', 'description', 'category', 'status', 'isExpired', 'createdAt', 'updatedAt', 'createdBy'
+      ]) &&
+      data.keys().hasOnly([
+        'title', 'description', 'category', 'status', 'isExpired',
+        'expiresAt', 'publishedAt', 'createdAt', 'updatedAt', 'createdBy'
+      ]) &&
+      data.title is string && data.title.size() >= 3 && data.title.size() <= 160 &&
+      data.description is string && data.description.size() >= 5 && data.description.size() <= 3000 &&
+      data.category in [
+        'Business Announcement', 'Service Notice', 'Holiday Notice',
+        'Customer Information', 'General Update'
+      ] &&
+      data.status in ['draft', 'published', 'archived'] &&
+      data.isExpired is bool &&
+      isOptionalString(data, 'expiresAt', 40) &&
+      (!('publishedAt' in data) || data.publishedAt == null || data.publishedAt is timestamp) &&
+      data.createdAt is timestamp &&
+      data.updatedAt == request.time &&
+      data.createdBy is string && data.createdBy.size() <= 128;
+    }
+
+    function isValidFeedbackCreate(data) {
+      return data.keys().hasAll([
+        'feedbackCode', 'serviceCategory', 'rating', 'message',
+        'publicationConsent', 'status', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'feedbackCode', 'customerName', 'mobileNumber', 'serviceCategory',
+        'serviceReferenceId', 'rating', 'message', 'publicationConsent',
+        'status', 'createdAt', 'updatedAt'
+      ]) &&
+      data.feedbackCode is string && data.feedbackCode.size() >= 8 && data.feedbackCode.size() <= 32 &&
+      data.feedbackCode.matches('^MC-FB-[A-Z0-9]+$') &&
+      isOptionalString(data, 'customerName', 100) &&
+      isOptionalString(data, 'mobileNumber', 20) &&
+      data.serviceCategory is string && data.serviceCategory.size() >= 2 && data.serviceCategory.size() <= 100 &&
+      isOptionalString(data, 'serviceReferenceId', 64) &&
+      data.rating is int && data.rating >= 1 && data.rating <= 5 &&
+      data.message is string && data.message.size() >= 5 && data.message.size() <= 2000 &&
+      data.publicationConsent is bool &&
+      data.status == 'NEW' &&
+      data.createdAt == request.time &&
+      data.updatedAt == request.time;
+    }
+
+    function isValidFeedbackAdminUpdate(data) {
+      return data.keys().hasAll([
+        'feedbackCode', 'serviceCategory', 'rating', 'message',
+        'publicationConsent', 'status', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'feedbackCode', 'customerName', 'mobileNumber', 'serviceCategory',
+        'serviceReferenceId', 'rating', 'message', 'publicationConsent',
+        'status', 'adminResponse', 'reviewedBy', 'reviewedAt', 'createdAt', 'updatedAt'
+      ]) &&
+      data.status in ['NEW', 'UNDER_REVIEW', 'APPROVED', 'REJECTED', 'ARCHIVED'] &&
+      isOptionalString(data, 'adminResponse', 1000) &&
+      isOptionalString(data, 'reviewedBy', 128) &&
+      (!('reviewedAt' in data) || data.reviewedAt is timestamp) &&
+      data.updatedAt == request.time;
+    }
+
+    function isValidPublicReview(data) {
+      return data.keys().hasAll([
+        'feedbackId', 'displayName', 'serviceCategory', 'rating',
+        'message', 'approvedAt', 'createdAt', 'publishedBy'
+      ]) &&
+      data.keys().hasOnly([
+        'feedbackId', 'displayName', 'serviceCategory', 'rating',
+        'message', 'adminResponse', 'approvedAt', 'createdAt', 'publishedBy'
+      ]) &&
+      isValidId(data.feedbackId) &&
+      data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 100 &&
+      data.serviceCategory is string && data.serviceCategory.size() >= 2 && data.serviceCategory.size() <= 100 &&
+      data.rating is int && data.rating >= 1 && data.rating <= 5 &&
+      data.message is string && data.message.size() >= 5 && data.message.size() <= 2000 &&
+      isOptionalString(data, 'adminResponse', 1000) &&
+      data.approvedAt == request.time &&
+      data.createdAt is timestamp &&
+      data.publishedBy == request.auth.uid;
+    }
+
+    function isValidContactEnquiryCreate(data) {
+      return data.keys().hasAll(['name', 'subject', 'message', 'status', 'createdAt', 'updatedAt']) &&
+      data.keys().hasOnly([
+        'name', 'phone', 'email', 'serviceCategory', 'subject', 'message', 'status', 'createdAt', 'updatedAt'
+      ]) &&
+      data.name is string && data.name.size() >= 2 && data.name.size() <= 100 &&
+      isOptionalString(data, 'phone', 20) &&
+      isOptionalString(data, 'email', 120) &&
+      isOptionalString(data, 'serviceCategory', 100) &&
+      data.subject is string && data.subject.size() >= 3 && data.subject.size() <= 160 &&
+      data.message is string && data.message.size() >= 5 && data.message.size() <= 2000 &&
+      data.status == 'NEW' &&
+      data.createdAt == request.time &&
+      data.updatedAt == request.time;
+    }
+
+    function isValidStaffUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'displayName', 'role', 'status', 'createdAt', 'updatedAt']) &&
+      data.keys().hasOnly([
+        'uid', 'email', 'displayName', 'role', 'status',
+        'registeredDevices', 'lastLoginAt', 'createdAt', 'updatedAt'
+      ]) &&
+      isValidId(data.uid) &&
+      data.email is string && data.email.size() >= 5 && data.email.size() <= 120 &&
+      data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 100 &&
+      data.role in ['admin', 'manager', 'staff'] &&
+      data.status in ['active', 'suspended'] &&
+      (!('registeredDevices' in data) || (
+        data.registeredDevices is list &&
+        data.registeredDevices.size() <= 10 &&
+        (data.registeredDevices.size() == 0 || data.registeredDevices[0] is string)
+      )) &&
+      (!('lastLoginAt' in data) || data.lastLoginAt is timestamp) &&
+      data.createdAt is timestamp &&
+      data.updatedAt == request.time;
+    }
+
+    function isValidCustomerRecord(data) {
+      return data.keys().hasAll(['fullName', 'mobile', 'createdBy', 'createdAt', 'updatedAt']) &&
+      data.keys().hasOnly(['fullName', 'mobile', 'village', 'notes', 'createdBy', 'createdAt', 'updatedAt']) &&
+      data.fullName is string && data.fullName.size() >= 2 && data.fullName.size() <= 120 &&
+      data.mobile is string && data.mobile.size() >= 6 && data.mobile.size() <= 20 &&
+      isOptionalString(data, 'village', 120) &&
+      isOptionalString(data, 'notes', 600) &&
+      data.createdBy is string && data.createdBy.size() <= 128 &&
+      data.createdAt is timestamp &&
+      data.updatedAt == request.time;
+    }
+
+    function isValidServiceApplication(data) {
+      return data.keys().hasAll([
+        'referenceId', 'customerName', 'serviceCategory', 'serviceTitle',
+        'status', 'feeCollected', 'createdBy', 'createdAt', 'updatedAt'
+      ]) &&
+      data.keys().hasOnly([
+        'referenceId', 'customerName', 'mobile', 'serviceCategory', 'serviceTitle',
+        'status', 'feeCollected', 'notes', 'createdBy', 'createdAt', 'updatedAt'
+      ]) &&
+      data.referenceId is string && data.referenceId.size() >= 3 && data.referenceId.size() <= 64 &&
+      data.customerName is string && data.customerName.size() >= 2 && data.customerName.size() <= 120 &&
+      isOptionalString(data, 'mobile', 20) &&
+      data.serviceCategory is string && data.serviceCategory.size() >= 2 && data.serviceCategory.size() <= 100 &&
+      data.serviceTitle is string && data.serviceTitle.size() >= 2 && data.serviceTitle.size() <= 140 &&
+      data.status in ['Pending', 'In Process', 'Completed', 'Delivered', 'Cancelled'] &&
+      data.feeCollected is number && data.feeCollected >= 0 &&
+      isOptionalString(data, 'notes', 600) &&
+      data.createdBy is string && data.createdBy.size() <= 128 &&
+      data.createdAt is timestamp &&
+      data.updatedAt == request.time;
+    }
+
+    function isValidLedgerEntry(data) {
+      return data.keys().hasAll([
+        'entryType', 'category', 'description', 'amount', 'paymentMode', 'dateStr', 'createdBy', 'createdAt'
+      ]) &&
+      data.keys().hasOnly([
+        'entryType', 'category', 'description', 'amount', 'paymentMode', 'dateStr', 'createdBy', 'createdAt'
+      ]) &&
+      data.entryType in ['Income', 'Expense', 'Payment Received', 'Payment Due', 'Refund'] &&
+      data.category is string && data.category.size() >= 2 && data.category.size() <= 100 &&
+      data.description is string && data.description.size() >= 2 && data.description.size() <= 300 &&
+      data.amount is number && data.amount >= 0 &&
+      data.paymentMode in ['Cash', 'UPI', 'Bank Transfer', 'Card'] &&
+      data.dateStr is string && data.dateStr.size() >= 8 && data.dateStr.size() <= 20 &&
+      data.createdBy is string && data.createdBy.size() <= 128 &&
+      data.createdAt is timestamp;
+    }
+
+    function isValidLpgRecord(data) {
+      return data.keys().hasAll([
+        'consumerName', 'consumerNumber', 'agencyName', 'bookingType', 'status', 'createdBy', 'createdAt'
+      ]) &&
+      data.keys().hasOnly([
+        'consumerName', 'consumerNumber', 'agencyName', 'bookingType', 'status', 'createdBy', 'createdAt'
+      ]) &&
+      data.consumerName is string && data.consumerName.size() >= 2 && data.consumerName.size() <= 120 &&
+      data.consumerNumber is string && data.consumerNumber.size() >= 4 && data.consumerNumber.size() <= 40 &&
+      data.agencyName is string && data.agencyName.size() >= 2 && data.agencyName.size() <= 100 &&
+      data.bookingType in ['Refill Booking', 'e-KYC', 'New Connection', 'Subsidy Check'] &&
+      data.status in ['Booked', 'Pending', 'Completed'] &&
+      data.createdBy is string && data.createdBy.size() <= 128 &&
+      data.createdAt is timestamp;
+    }
+
+    function isValidInventoryItem(data) {
+      return data.keys().hasAll([
+        'itemName', 'category', 'quantity', 'unit', 'reorderLevel', 'updatedAt', 'updatedBy'
+      ]) &&
+      data.keys().hasOnly([
+        'itemName', 'category', 'quantity', 'unit', 'reorderLevel', 'updatedAt', 'updatedBy'
+      ]) &&
+      data.itemName is string && data.itemName.size() >= 2 && data.itemName.size() <= 120 &&
+      data.category is string && data.category.size() >= 2 && data.category.size() <= 80 &&
+      data.quantity is number && data.quantity >= 0 &&
+      data.unit is string && data.unit.size() >= 1 && data.unit.size() <= 30 &&
+      data.reorderLevel is number && data.reorderLevel >= 0 &&
+      data.updatedAt == request.time &&
+      data.updatedBy == request.auth.uid;
+    }
+
+    function isValidAuditLog(data) {
+      return data.keys().hasAll([
+        'action', 'module', 'targetId', 'details', 'actorUid', 'actorEmail', 'createdAt'
+      ]) &&
+      data.keys().hasOnly([
+        'action', 'module', 'targetId', 'details', 'actorUid', 'actorEmail', 'createdAt'
+      ]) &&
+      data.action is string && data.action.size() >= 2 && data.action.size() <= 120 &&
+      data.module is string && data.module.size() >= 2 && data.module.size() <= 80 &&
+      data.targetId is string && data.targetId.size() >= 1 && data.targetId.size() <= 128 &&
+      data.details is string && data.details.size() >= 2 && data.details.size() <= 600 &&
+      data.actorUid == request.auth.uid &&
+      data.actorEmail is string && data.actorEmail.size() <= 120 &&
+      data.createdAt == request.time;
+    }
+
+    // =========================================================
+    // COLLECTION RULES
+    // =========================================================
+
+    match /test/connection {
+      allow get: if true;
+    }
+
+    match /website_settings/{settingId} {
+      allow get: if isValidId(settingId) && settingId == 'main';
+      allow list: if false;
+      allow create, update: if isValidId(settingId) && settingId == 'main' && isAdmin() && isValidWebsiteSettings(incoming());
+      allow delete: if false;
+    }
+
+    match /master_settings/{settingId} {
+      allow get: if isValidId(settingId) && settingId == 'main' && isStaff();
+      allow list: if false;
+      allow create, update: if isValidId(settingId) && settingId == 'main' && isAdmin() && isValidMasterSettings(incoming());
+      allow delete: if false;
+    }
+
+    match /public_services/{serviceId} {
+      allow get: if isValidId(serviceId);
+      allow list: if true;
+      allow create, update: if isValidId(serviceId) && isAdmin() && isValidPublicService(incoming());
+      allow delete: if isValidId(serviceId) && isAdmin();
+    }
+
+    match /service_internals/{serviceId} {
+      allow get: if isValidId(serviceId) && isStaff();
+      allow list: if isStaff();
+      allow create, update: if isValidId(serviceId) && isManagerOrAdmin() && isValidServiceInternal(incoming());
+      allow delete: if isValidId(serviceId) && isAdmin();
+    }
+
+    match /public_notices/{noticeId} {
+      allow get: if isValidId(noticeId) && (existing().status == 'published' || isStaff());
+      allow list: if existing().status == 'published' || isAdmin();
+      allow create: if isValidId(noticeId) && isAdmin() && isValidNotice(incoming()) && incoming().createdAt == request.time && incoming().createdBy == request.auth.uid;
+      allow update: if isValidId(noticeId) && isAdmin() && isValidNotice(incoming()) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().createdBy == existing().createdBy &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'title', 'description', 'category', 'status', 'isExpired', 'expiresAt', 'publishedAt', 'updatedAt'
+        ]);
+      allow delete: if isValidId(noticeId) && isAdmin();
+    }
+
+    match /customer_feedback/{feedbackId} {
+      allow get: if isValidId(feedbackId) && isManagerOrAdmin();
+      allow list: if isManagerOrAdmin();
+      allow create: if isValidId(feedbackId) && isValidFeedbackCreate(incoming());
+      allow update: if isValidId(feedbackId) && isAdmin() && isValidFeedbackAdminUpdate(incoming()) &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'status', 'adminResponse', 'reviewedBy', 'reviewedAt', 'updatedAt'
+        ]);
+      allow delete: if isValidId(feedbackId) && isAdmin();
+    }
+
+    match /public_reviews/{reviewId} {
+      allow get: if isValidId(reviewId);
+      allow list: if true;
+      allow create, update: if isValidId(reviewId) && isAdmin() && isValidPublicReview(incoming());
+      allow delete: if isValidId(reviewId) && isAdmin();
+    }
+
+    match /contact_enquiries/{enquiryId} {
+      allow get: if isValidId(enquiryId) && isStaff();
+      allow list: if isStaff();
+      allow create: if isValidId(enquiryId) && isValidContactEnquiryCreate(incoming());
+      allow update: if isValidId(enquiryId) && isStaff() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+        incoming().status in ['NEW', 'IN_PROGRESS', 'RESOLVED'] &&
+        incoming().updatedAt == request.time;
+      allow delete: if isValidId(enquiryId) && isAdmin();
+    }
+
+    match /staff_users/{uid} {
+      allow get: if isValidId(uid) && (isAdmin() || (isVerifiedUser() && request.auth.uid == uid));
+      allow list: if isAdmin();
+      allow create: if isValidId(uid) && isValidStaffUser(incoming()) && incoming().createdAt == request.time && (
+        isAdmin() ||
+        (isBootstrappedAdmin() && request.auth.uid == uid && incoming().uid == uid && incoming().role == 'admin')
+      );
+      allow update: if isValidId(uid) && isValidStaffUser(incoming()) &&
+        incoming().uid == existing().uid &&
+        incoming().createdAt == existing().createdAt && (
+          isAdmin() ||
+          (
+            isVerifiedUser() &&
+            request.auth.uid == uid &&
+            incoming().role == existing().role &&
+            incoming().status == existing().status &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['registeredDevices', 'lastLoginAt', 'updatedAt'])
+          )
+        );
+      allow delete: if isValidId(uid) && isAdmin();
+    }
+
+    match /admins/{uid} {
+      allow get: if isValidId(uid) && isVerifiedUser() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isValidId(uid) && isBootstrappedAdmin() &&
+        incoming().keys().hasAll(['email', 'createdAt']) &&
+        incoming().keys().hasOnly(['email', 'createdAt']) &&
+        incoming().email is string && incoming().email.size() <= 120 &&
+        incoming().createdAt == request.time;
+      allow update, delete: if isValidId(uid) && isAdmin();
+    }
+
+    match /customers/{customerId} {
+      allow get: if isValidId(customerId) && isStaff();
+      allow list: if isStaff();
+      allow create: if isValidId(customerId) && isStaff() && isValidCustomerRecord(incoming()) && incoming().createdAt == request.time && incoming().createdBy == request.auth.uid;
+      allow update: if isValidId(customerId) && isStaff() && isValidCustomerRecord(incoming()) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().createdBy == existing().createdBy &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['fullName', 'mobile', 'village', 'notes', 'updatedAt']);
+      allow delete: if isValidId(customerId) && isManagerOrAdmin();
+    }
+
+    match /applications/{applicationId} {
+      allow get: if isValidId(applicationId) && isStaff();
+      allow list: if isStaff();
+      allow create: if isValidId(applicationId) && isStaff() && isValidServiceApplication(incoming()) && incoming().createdAt == request.time && incoming().createdBy == request.auth.uid;
+      allow update: if isValidId(applicationId) && isStaff() && isValidServiceApplication(incoming()) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().createdBy == existing().createdBy &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'referenceId', 'customerName', 'mobile', 'serviceCategory', 'serviceTitle', 'status', 'feeCollected', 'notes', 'updatedAt'
+        ]);
+      allow delete: if isValidId(applicationId) && isManagerOrAdmin();
+    }
+
+    match /ledger_entries/{entryId} {
+      allow get: if isValidId(entryId) && isStaff();
+      allow list: if isStaff();
+      allow create: if isValidId(entryId) && isStaff() && isValidLedgerEntry(incoming()) && incoming().createdAt == request.time && incoming().createdBy == request.auth.uid;
+      allow update: if isValidId(entryId) && isManagerOrAdmin() && isValidLedgerEntry(incoming()) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().createdBy == existing().createdBy &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'entryType', 'category', 'description', 'amount', 'paymentMode', 'dateStr'
+        ]);
+      allow delete: if isValidId(entryId) && isAdmin();
+    }
+
+    match /lpg_records/{recordId} {
+      allow get: if isValidId(recordId) && isStaff();
+      allow list: if isStaff();
+      allow create: if isValidId(recordId) && isStaff() && isValidLpgRecord(incoming()) && incoming().createdAt == request.time && incoming().createdBy == request.auth.uid;
+      allow update: if isValidId(recordId) && isStaff() && isValidLpgRecord(incoming()) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().createdBy == existing().createdBy &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'consumerName', 'consumerNumber', 'agencyName', 'bookingType', 'status'
+        ]);
+      allow delete: if isValidId(recordId) && isManagerOrAdmin();
+    }
+
+    match /inventory_items/{itemId} {
+      allow get: if isValidId(itemId) && isStaff();
+      allow list: if isStaff();
+      allow create, update: if isValidId(itemId) && isStaff() && isValidInventoryItem(incoming());
+      allow delete: if isValidId(itemId) && isManagerOrAdmin();
+    }
+
+    match /audit_logs/{logId} {
+      allow get: if isValidId(logId) && isManagerOrAdmin();
+      allow list: if isManagerOrAdmin();
+      allow create: if isValidId(logId) && isStaff() && isValidAuditLog(incoming());
+      allow update, delete: if false;
+    }
+  }
+}
