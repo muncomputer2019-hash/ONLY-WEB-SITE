@@ -14,7 +14,7 @@ export const TermsPage: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <section className="border-b border-slate-200 bg-slate-50">
+      <section className="border-b border-slate-200 bg-3d-stage">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-2">
           <p className="text-xs sm:text-sm font-medium text-blue-800">Legal Information</p>
           <h1 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
@@ -94,7 +94,7 @@ export const TermsPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="border border-slate-200 rounded-xl p-6 bg-slate-50 space-y-1.5 text-sm">
+        <div className="card-3d rounded-2xl p-6 space-y-1.5 text-sm">
           <p className="font-semibold text-slate-950">Official Contact Details</p>
           <p>{settings.businessName || 'MUN COMPUTER'}</p>
           <p>{formatFullAddress(settings)}</p>

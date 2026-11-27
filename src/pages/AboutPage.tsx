@@ -17,7 +17,7 @@ export const AboutPage: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <section className="border-b border-slate-200 bg-slate-50">
+      <section className="border-b border-slate-200 bg-3d-stage">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-18">
           <div className="max-w-3xl space-y-3">
             <p className="text-xs sm:text-sm font-medium text-blue-800">About MUN COMPUTER</p>
@@ -64,7 +64,7 @@ export const AboutPage: React.FC = () => {
           </div>
 
           <div className="lg:col-span-6 flex flex-col gap-3">
-            <div className="w-full flex-1 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden min-h-[280px] flex items-center justify-center">
+            <div className="frame-3d w-full flex-1 rounded-2xl p-2 overflow-hidden min-h-[280px] flex items-center justify-center">
               {!imgErr ? (
                 <img
                   src={SHOP_STOREFRONT_IMAGE}
@@ -87,9 +87,9 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="border-b border-slate-200 bg-slate-50">
+      <section className="border-b border-slate-200 bg-3d-stage">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-3">
+          <div className="card-3d-interactive rounded-2xl p-6 space-y-3">
             <h2 className="font-display text-lg font-bold text-slate-950">
               Digital Service Solutions
             </h2>
@@ -108,7 +108,7 @@ export const AboutPage: React.FC = () => {
             </Link>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-3">
+          <div className="card-3d-interactive rounded-2xl p-6 space-y-3">
             <h2 className="font-display text-lg font-bold text-slate-950">Customer Support</h2>
             <p className="text-sm text-slate-600 leading-relaxed">
               We value honest communication. Customers receive application reference tracking where
@@ -127,7 +127,7 @@ export const AboutPage: React.FC = () => {
 
       <section className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-          <div className="border border-slate-200 rounded-xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="card-3d rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
               <h2 className="font-display text-xl font-bold text-slate-950">
                 Business Contact Information
@@ -149,7 +149,7 @@ export const AboutPage: React.FC = () => {
             </div>
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold text-white bg-blue-800 rounded-lg hover:bg-blue-900 transition-colors whitespace-nowrap shrink-0"
+              className="btn-3d-blue inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold rounded-lg whitespace-nowrap shrink-0"
             >
               Contact MUN COMPUTER
               <ArrowRight className="w-4 h-4" />

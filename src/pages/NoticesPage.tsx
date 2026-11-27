@@ -57,7 +57,7 @@ export const NoticesPage: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <section className="border-b border-slate-200 bg-slate-50">
+      <section className="border-b border-slate-200 bg-3d-stage">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <div className="max-w-3xl space-y-3">
             <p className="text-xs sm:text-sm font-medium text-blue-800">Official Announcements</p>
@@ -79,10 +79,8 @@ export const NoticesPage: React.FC = () => {
               key={cat}
               type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-2 text-xs font-medium rounded-lg border transition-colors cursor-pointer whitespace-nowrap ${
-                selectedCategory === cat
-                  ? 'bg-blue-800 text-white border-blue-800'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              className={`px-3.5 py-2 text-xs font-semibold rounded-lg cursor-pointer whitespace-nowrap ${
+                selectedCategory === cat ? 'nav-3d-active' : 'nav-3d text-slate-700'
               }`}
             >
               {cat}
@@ -91,11 +89,11 @@ export const NoticesPage: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="border border-slate-200 rounded-xl p-8 text-sm text-slate-500">
+          <div className="card-3d rounded-2xl p-8 text-sm text-slate-500">
             Loading published notices...
           </div>
         ) : filtered.length === 0 ? (
-          <div className="border border-slate-200 rounded-xl p-10 bg-slate-50 text-center space-y-2">
+          <div className="card-3d rounded-2xl p-10 text-center space-y-2">
             <Bell className="w-6 h-6 text-slate-400 mx-auto" />
             <p className="text-base font-semibold text-slate-900">No published notices found</p>
             <p className="text-sm text-slate-600">
@@ -107,7 +105,7 @@ export const NoticesPage: React.FC = () => {
             {filtered.map((notice) => (
               <article
                 key={notice.id}
-                className="border border-slate-200 rounded-xl p-6 bg-white flex flex-col justify-between gap-4"
+                className="card-3d-interactive rounded-2xl p-6 flex flex-col justify-between gap-4"
               >
                 <div className="space-y-3">
                   <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
@@ -158,7 +156,7 @@ export const NoticesPage: React.FC = () => {
           aria-labelledby="notice-modal-title"
           className="fixed inset-0 z-50 bg-slate-950/50 flex items-center justify-center p-4"
         >
-          <div className="max-w-xl w-full bg-white border border-slate-200 rounded-xl p-6 sm:p-8 space-y-5 max-h-[85vh] overflow-y-auto">
+          <div className="card-3d max-w-xl w-full rounded-2xl p-6 sm:p-8 space-y-5 max-h-[85vh] overflow-y-auto">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -179,7 +177,7 @@ export const NoticesPage: React.FC = () => {
                 type="button"
                 onClick={() => setActiveNotice(null)}
                 aria-label="Close notice details"
-                className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 cursor-pointer"
+                className="nav-3d p-2 rounded-lg text-slate-600 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>

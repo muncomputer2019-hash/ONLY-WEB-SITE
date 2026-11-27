@@ -174,7 +174,7 @@ export const ServicesPage: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <section className="border-b border-slate-200 bg-slate-50">
+      <section className="border-b border-slate-200 bg-3d-stage">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-6">
           <div className="max-w-3xl space-y-3">
             <p className="text-xs sm:text-sm font-medium text-blue-800">
@@ -201,7 +201,7 @@ export const ServicesPage: React.FC = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search 580+ services (e.g. Aadhaar, Lakshmir Bhandar, PVC, PAN, Passport)..."
                   aria-label="Search all services"
-                  className="w-full pl-10 pr-9 py-2.5 text-sm border border-slate-300 rounded-lg bg-white text-slate-950 placeholder:text-slate-400 focus:outline-none focus:border-blue-800"
+                  className="input-3d w-full pl-10 pr-9 py-2.5 text-sm rounded-lg text-slate-950 placeholder:text-slate-400"
                 />
                 {searchTerm && (
                   <button
@@ -218,7 +218,7 @@ export const ServicesPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleCategoryChange('All')}
-                  className="px-4 py-2.5 text-sm font-medium bg-white border border-slate-300 rounded-lg hover:bg-slate-100 cursor-pointer whitespace-nowrap"
+                  className="btn-3d-white px-4 py-2.5 text-sm font-semibold text-slate-800 rounded-lg cursor-pointer whitespace-nowrap"
                 >
                   View All 40 Categories
                 </button>
@@ -236,10 +236,8 @@ export const ServicesPage: React.FC = () => {
                       handleCategoryChange('All');
                     }
                   }}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors cursor-pointer whitespace-nowrap ${
-                    selectedGroup === group
-                      ? 'bg-slate-950 text-white border-slate-950'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                  className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg cursor-pointer whitespace-nowrap ${
+                    selectedGroup === group ? 'nav-3d-active' : 'nav-3d text-slate-700'
                   }`}
                 >
                   {group === 'All' ? 'All Groups' : group}
@@ -253,34 +251,32 @@ export const ServicesPage: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Category Sidebar */}
-          <aside className="lg:col-span-4 border border-slate-200 rounded-xl bg-white overflow-hidden lg:sticky lg:top-20">
-            <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-slate-950">
+          <aside className="lg:col-span-4 card-3d rounded-2xl overflow-hidden lg:sticky lg:top-24">
+            <div className="panel-header-3d p-4 flex items-center justify-between text-white">
+              <h2 className="text-sm font-semibold">
                 Main Categories ({visibleCategories.length})
               </h2>
               {selectedCategory !== 'All' && (
                 <button
                   type="button"
                   onClick={() => handleCategoryChange('All')}
-                  className="text-xs font-medium text-blue-800 hover:underline cursor-pointer"
+                  className="text-xs font-medium text-sky-200 hover:text-white hover:underline cursor-pointer"
                 >
                   Reset
                 </button>
               )}
             </div>
 
-            <div className="max-h-[340px] lg:max-h-[600px] overflow-y-auto divide-y divide-slate-100">
+            <div className="max-h-[340px] lg:max-h-[600px] overflow-y-auto p-2 space-y-1.5 bg-slate-50/60">
               <button
                 type="button"
                 onClick={() => handleCategoryChange('All')}
-                className={`w-full px-4 py-3 text-left text-xs sm:text-sm flex items-center justify-between transition-colors cursor-pointer ${
-                  selectedCategory === 'All'
-                    ? 'bg-blue-50 text-blue-900 font-semibold'
-                    : 'text-slate-700 hover:bg-slate-50'
+                className={`w-full px-3.5 py-2.5 rounded-lg text-left text-xs sm:text-sm flex items-center justify-between cursor-pointer font-semibold ${
+                  selectedCategory === 'All' ? 'nav-3d-active' : 'nav-3d text-slate-700'
                 }`}
               >
                 <span>All 40 Categories</span>
-                <span className="font-mono-tabular text-xs text-slate-500">
+                <span className={`font-mono-tabular text-xs ${selectedCategory === 'All' ? 'text-blue-100' : 'text-slate-500'}`}>
                   {TOTAL_CATALOG_SERVICES}
                 </span>
               </button>
@@ -295,10 +291,8 @@ export const ServicesPage: React.FC = () => {
                       key={cat.id}
                       type="button"
                       onClick={() => handleCategoryChange(cat.title)}
-                      className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm flex items-center justify-between gap-2 transition-colors cursor-pointer ${
-                        isActive
-                          ? 'bg-blue-800 text-white font-semibold'
-                          : 'text-slate-700 hover:bg-slate-50'
+                      className={`w-full px-3.5 py-2.5 rounded-lg text-left text-xs sm:text-sm flex items-center justify-between gap-2 cursor-pointer font-semibold ${
+                        isActive ? 'nav-3d-active' : 'nav-3d text-slate-700'
                       }`}
                     >
                       <span className="truncate">
@@ -368,7 +362,7 @@ export const ServicesPage: React.FC = () => {
                         {group.items.map((srv) => (
                           <div
                             key={srv.id}
-                            className="border border-slate-200 rounded-xl p-4 bg-white flex flex-col justify-between gap-3"
+                            className="card-3d-interactive rounded-2xl p-4 flex flex-col justify-between gap-3"
                           >
                             <div className="space-y-1">
                               {srv.code && (
@@ -400,7 +394,7 @@ export const ServicesPage: React.FC = () => {
             ) : selectedCategoryObj ? (
               /* Single Selected Category Full List View */
               <div className="space-y-6">
-                <div className="border border-slate-200 rounded-xl p-6 bg-slate-50 space-y-3">
+                <div className="card-3d rounded-2xl p-6 space-y-3">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2.5 text-xs font-medium text-blue-800">
                       <span className="font-mono-tabular">
@@ -413,8 +407,8 @@ export const ServicesPage: React.FC = () => {
                         {selectedCategoryObj.items.length} services
                       </span>
                     </div>
-                    <div className="w-9 h-9 rounded-lg border border-slate-200 bg-white text-blue-800 flex items-center justify-center shrink-0">
-                      <CategoryIcon name={selectedCategoryObj.iconName} className="w-4 h-4" />
+                    <div className="icon-3d w-10 h-10 rounded-xl text-blue-800 flex items-center justify-center shrink-0">
+                      <CategoryIcon name={selectedCategoryObj.iconName} className="w-5 h-5" />
                     </div>
                   </div>
                   <h2 className="font-display text-2xl font-bold text-slate-950">
@@ -429,7 +423,7 @@ export const ServicesPage: React.FC = () => {
                   {selectedCategoryObj.items.map((srv, index) => (
                     <article
                       key={srv.id}
-                      className="border border-slate-200 rounded-xl p-5 bg-white hover:border-slate-300 transition-colors flex flex-col justify-between gap-4"
+                      className="card-3d-interactive rounded-2xl p-5 flex flex-col justify-between gap-4"
                     >
                       <div className="space-y-1.5">
                         <span className="font-mono-tabular text-xs text-slate-400">
@@ -468,14 +462,14 @@ export const ServicesPage: React.FC = () => {
                 {visibleCategories.map((cat) => (
                   <article
                     key={cat.id}
-                    className="border border-slate-200 rounded-xl p-6 bg-white flex flex-col justify-between gap-4"
+                    className="group card-3d-interactive rounded-2xl p-6 flex flex-col justify-between gap-4"
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between gap-3">
                         <span className="font-mono-tabular text-xs font-medium text-blue-800">
                           {cat.number} · {cat.items.length} services
                         </span>
-                        <div className="w-8 h-8 rounded-lg border border-slate-200 bg-slate-50 text-slate-800 flex items-center justify-center shrink-0">
+                        <div className="icon-3d w-9 h-9 rounded-xl text-[#0a3276] flex items-center justify-center shrink-0">
                           <CategoryIcon name={cat.iconName} className="w-4 h-4" />
                         </div>
                       </div>
@@ -507,7 +501,7 @@ export const ServicesPage: React.FC = () => {
               </div>
             )}
 
-            <div className="border border-slate-200 rounded-xl p-6 bg-slate-50 text-xs text-slate-600 leading-relaxed">
+            <div className="card-3d rounded-2xl p-6 text-xs text-slate-600 leading-relaxed">
               <strong className="text-slate-900">Important Notice:</strong> MUN COMPUTER provides
               independent digital assistance, form preparation, printing, and follow-up support.
               Approval, verification, and issuance of any government document, certificate, banking

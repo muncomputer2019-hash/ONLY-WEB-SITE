@@ -103,7 +103,7 @@ export const ContactPage: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <section className="border-b border-slate-200 bg-slate-50">
+      <section className="border-b border-slate-200 bg-3d-stage">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <div className="max-w-3xl space-y-3">
             <p className="text-xs sm:text-sm font-medium text-blue-800">Contact MUN COMPUTER</p>
@@ -121,7 +121,7 @@ export const ContactPage: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Official Contact Information */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="border border-slate-200 rounded-xl p-6 sm:p-8 bg-white space-y-6">
+          <div className="card-3d rounded-2xl p-6 sm:p-8 space-y-6">
             <h2 className="font-display text-xl font-bold text-slate-950">
               Official Contact Information
             </h2>
@@ -194,7 +194,7 @@ export const ContactPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-3 pt-2">
               <a
                 href={`tel:${phoneClean}`}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-blue-800 rounded-lg hover:bg-blue-900 transition-colors"
+                className="btn-3d-blue inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg"
               >
                 <Phone className="w-4 h-4" />
                 Call Now
@@ -203,7 +203,7 @@ export const ContactPage: React.FC = () => {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-900 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+                className="btn-3d-white inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-900 rounded-lg"
               >
                 <MessageCircle className="w-4 h-4 text-emerald-700" />
                 WhatsApp
@@ -212,7 +212,7 @@ export const ContactPage: React.FC = () => {
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="col-span-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-800 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+                className="btn-3d-white col-span-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-800 rounded-lg"
               >
                 <ExternalLink className="w-4 h-4" />
                 Get Directions
@@ -220,7 +220,7 @@ export const ContactPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="border border-slate-200 rounded-xl p-6 bg-slate-50 space-y-2">
+          <div className="card-3d-interactive rounded-2xl p-6 space-y-2">
             <h3 className="text-sm font-semibold text-slate-950">Want to leave feedback?</h3>
             <p className="text-xs text-slate-600 leading-relaxed">
               Rate a service you received at MUN COMPUTER using our dedicated feedback form.
@@ -236,7 +236,7 @@ export const ContactPage: React.FC = () => {
 
         {/* Contact Enquiry Form */}
         <div className="lg:col-span-7">
-          <div className="border border-slate-200 rounded-xl p-6 sm:p-8 bg-white space-y-6">
+          <div className="card-3d rounded-2xl p-6 sm:p-8 space-y-6">
             <div className="space-y-1">
               <h2 className="font-display text-xl font-bold text-slate-950">
                 Send a Service Enquiry
@@ -295,7 +295,7 @@ export const ContactPage: React.FC = () => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Your full name"
-                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-800"
+                      className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -309,7 +309,7 @@ export const ContactPage: React.FC = () => {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+91 ..."
-                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-800"
+                      className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -326,7 +326,7 @@ export const ContactPage: React.FC = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-800"
+                      className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -337,7 +337,7 @@ export const ContactPage: React.FC = () => {
                       id="ct-cat"
                       value={serviceCategory}
                       onChange={(e) => setServiceCategory(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:border-blue-800"
+                      className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg bg-white"
                     >
                       <option value="">General Enquiry</option>
                       {SERVICE_CATEGORIES.map((cat) => (
@@ -361,7 +361,7 @@ export const ContactPage: React.FC = () => {
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     placeholder="What service or document help do you need?"
-                    className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-800"
+                    className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg"
                   />
                 </div>
 
@@ -377,7 +377,7 @@ export const ContactPage: React.FC = () => {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Please share details of your question (avoid posting sensitive OTPs or passwords)..."
-                    className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-800"
+                    className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg"
                   />
                 </div>
 
@@ -393,7 +393,7 @@ export const ContactPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3 px-5 text-sm font-semibold text-white bg-blue-800 rounded-lg hover:bg-blue-900 disabled:opacity-60 transition-colors cursor-pointer"
+                  className="btn-3d-blue w-full py-3 px-5 text-sm font-semibold rounded-lg disabled:opacity-60 cursor-pointer"
                 >
                   {submitting ? 'Sending Enquiry...' : 'Submit Enquiry'}
                 </button>

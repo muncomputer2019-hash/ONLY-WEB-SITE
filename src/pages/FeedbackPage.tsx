@@ -79,7 +79,7 @@ export const FeedbackPage: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <section className="border-b border-slate-200 bg-slate-50">
+      <section className="border-b border-slate-200 bg-3d-stage">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <div className="max-w-3xl space-y-3">
             <p className="text-xs sm:text-sm font-medium text-blue-800">Customer Feedback</p>
@@ -98,7 +98,7 @@ export const FeedbackPage: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Feedback Submission Form */}
         <div className="lg:col-span-6">
-          <div className="border border-slate-200 rounded-xl p-6 sm:p-8 bg-white space-y-6">
+          <div className="card-3d rounded-2xl p-6 sm:p-8 space-y-6">
             <div className="space-y-1">
               <h2 className="font-display text-xl font-bold text-slate-950">
                 Submit Customer Feedback
@@ -157,7 +157,7 @@ export const FeedbackPage: React.FC = () => {
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
                       placeholder="Your name"
-                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-800"
+                      className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg"
                     />
                   </div>
 
@@ -172,7 +172,7 @@ export const FeedbackPage: React.FC = () => {
                       value={mobileNumber}
                       onChange={(e) => setMobileNumber(e.target.value)}
                       placeholder="Never published publicly"
-                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-800"
+                      className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg"
                     />
                   </div>
                 </div>
@@ -187,7 +187,7 @@ export const FeedbackPage: React.FC = () => {
                       required
                       value={serviceCategory}
                       onChange={(e) => setServiceCategory(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:border-blue-800"
+                      className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg bg-white"
                     >
                       {SERVICE_CATEGORIES.map((cat) => (
                         <option key={cat.id} value={cat.title}>
@@ -208,7 +208,7 @@ export const FeedbackPage: React.FC = () => {
                       value={serviceReferenceId}
                       onChange={(e) => setServiceReferenceId(e.target.value)}
                       placeholder="e.g. MC-APP-1024"
-                      className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg font-mono-tabular focus:outline-none focus:border-blue-800"
+                      className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg font-mono-tabular"
                     />
                   </div>
                 </div>
@@ -224,10 +224,10 @@ export const FeedbackPage: React.FC = () => {
                         type="button"
                         onClick={() => setRating(value)}
                         aria-label={`Rate ${value} out of 5 stars`}
-                        className={`p-2 rounded-lg border transition-colors cursor-pointer ${
+                        className={`p-2 rounded-lg transition-all cursor-pointer ${
                           value <= rating
-                            ? 'border-amber-300 bg-amber-50 text-amber-500'
-                            : 'border-slate-200 bg-white text-slate-300 hover:text-slate-400'
+                            ? 'bg-gradient-to-b from-amber-50 to-amber-100 border border-amber-300 border-b-[3px] border-b-amber-400 text-amber-500 shadow-sm -translate-y-0.5'
+                            : 'nav-3d text-slate-300 hover:text-amber-400'
                         }`}
                       >
                         <Star className={`w-5 h-5 ${value <= rating ? 'fill-current' : ''}`} />
@@ -251,7 +251,7 @@ export const FeedbackPage: React.FC = () => {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Share how our team assisted you or how we can serve you better..."
-                    className="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-800"
+                    className="input-3d w-full px-3.5 py-2.5 text-sm rounded-lg"
                   />
                 </div>
 
@@ -293,7 +293,7 @@ export const FeedbackPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3 px-5 text-sm font-semibold text-white bg-blue-800 rounded-lg hover:bg-blue-900 disabled:opacity-60 transition-colors cursor-pointer"
+                  className="btn-3d-blue w-full py-3 px-5 text-sm font-semibold rounded-lg disabled:opacity-60 cursor-pointer"
                 >
                   {submitting ? 'Submitting Feedback...' : 'Submit Feedback'}
                 </button>
@@ -314,7 +314,7 @@ export const FeedbackPage: React.FC = () => {
           </div>
 
           {reviews.length === 0 ? (
-            <div className="border border-slate-200 rounded-xl p-10 bg-slate-50 text-center space-y-2">
+            <div className="card-3d rounded-2xl p-10 text-center space-y-2">
               <p className="text-sm font-semibold text-slate-800">
                 No customer reviews have been published yet.
               </p>
@@ -328,7 +328,7 @@ export const FeedbackPage: React.FC = () => {
               {reviews.map((rev) => (
                 <article
                   key={rev.id}
-                  className="border border-slate-200 rounded-xl p-6 bg-white space-y-3"
+                  className="card-3d rounded-2xl p-6 space-y-3"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-1 text-amber-500">

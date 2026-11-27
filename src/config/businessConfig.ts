@@ -2,6 +2,7 @@ import type { PublicServiceItem, ServiceCategoryInfo, WebsiteSettings } from '..
 import { FULL_SERVICES_CATALOG } from './servicesCatalog';
 
 export const OFFICIAL_WEB_APP_URL = 'https://app.muncomputer.org';
+export const APPOINTMENT_BOOKING_URL = `${OFFICIAL_WEB_APP_URL}/?bookAppointment=1`;
 
 /**
  * Configurable Official Logo Asset Location.

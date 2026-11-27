@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import {
   Bell,
+  CalendarCheck,
   Home,
   LayoutGrid,
   Lock,
@@ -11,7 +12,7 @@ import {
   UserCheck,
   X,
 } from 'lucide-react';
-import { OFFICIAL_WEB_APP_URL } from '../config/businessConfig';
+import { APPOINTMENT_BOOKING_URL, OFFICIAL_WEB_APP_URL } from '../config/businessConfig';
 import { LogoMark } from './LogoMark';
 
 const NAV_ITEMS = [
@@ -23,26 +24,36 @@ const NAV_ITEMS = [
   { label: 'Contact Us', to: '/contact', icon: Mail },
 ];
 
+const BlinkingStatusDot: React.FC = () => (
+  <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden="true">
+    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-85" />
+    <span className="animate-pulse relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.95)] ring-1 ring-white/70" />
+  </span>
+);
+
+const APPOINTMENT_3D_CLASSES =
+  'text-white font-semibold bg-gradient-to-b from-[#2563eb] via-[#1d4ed8] to-[#153ca1] border border-[#1e40af] border-b-[3px] border-b-[#0a236b] shadow-[inset_0_1px_0_rgba(255,255,255,0.34),0_4px_10px_-2px_rgba(15,60,133,0.45)] hover:-translate-y-0.5 hover:from-[#3b82f6] hover:via-[#2563eb] hover:to-[#1d4ed8] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.42),0_6px_14px_-2px_rgba(29,78,216,0.52)] active:translate-y-[2px] active:border-b active:shadow-[inset_0_2px_4px_rgba(10,35,107,0.45),0_1px_2px_rgba(15,60,133,0.3)] transition-all duration-150 ease-out rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1d4ed8]';
+
 export const PublicHeader: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-[0_1px_3px_rgba(15,23,42,0.04)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-[72px] flex items-center justify-between gap-3 lg:gap-6">
-        <div className="flex items-center gap-4 shrink-0">
+    <header className="sticky top-0 z-40 bg-gradient-to-b from-white via-white to-slate-50/95 backdrop-blur-md border-b-2 border-slate-200/90 shadow-[0_8px_24px_-10px_rgba(15,60,133,0.16)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-[74px] flex items-center justify-between gap-3 xl:gap-4">
+        <div className="flex items-center gap-3 shrink-0">
           <Link
             to="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0f3c85] rounded-md shrink-0"
+            className="focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#0f3c85] rounded-lg shrink-0 transition-transform duration-150 hover:-translate-y-0.5"
           >
             <LogoMark variant="header" />
           </Link>
-          <span className="hidden xl:block h-8 w-px bg-slate-200" aria-hidden="true" />
+          <span className="hidden 2xl:block h-8 w-px bg-slate-200" aria-hidden="true" />
         </div>
 
         <nav
           aria-label="Primary Navigation"
-          className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-sm font-medium text-slate-700"
+          className="hidden xl:flex items-center gap-1.5 text-[13px] 2xl:text-sm font-medium text-slate-700"
         >
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
@@ -52,26 +63,35 @@ export const PublicHeader: React.FC = () => {
                 to={item.to}
                 end={item.to === '/'}
                 className={({ isActive }) =>
-                  `inline-flex items-center gap-1.5 px-3 py-2 rounded-lg whitespace-nowrap shrink-0 transition-colors ${
-                    isActive
-                      ? 'bg-[#0f3c85] text-white font-semibold shadow-xs'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                  `inline-flex items-center gap-1.5 px-2.5 2xl:px-3 py-1.5 rounded-lg whitespace-nowrap shrink-0 font-semibold ${
+                    isActive ? 'nav-3d-active' : 'nav-3d text-slate-700'
                   }`
                 }
               >
-                <Icon className="w-4 h-4 shrink-0" />
+                <Icon className="w-3.5 h-3.5 shrink-0" />
                 <span>{item.label}</span>
               </NavLink>
             );
           })}
         </nav>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          <a
+            href={APPOINTMENT_BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`hidden sm:inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs xl:text-[13px] 2xl:text-sm whitespace-nowrap shrink-0 ${APPOINTMENT_3D_CLASSES}`}
+          >
+            <BlinkingStatusDot />
+            <CalendarCheck className="w-4 h-4 shrink-0" />
+            <span>Appointment Booking</span>
+          </a>
+
           <a
             href={OFFICIAL_WEB_APP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-[#0a2d67] rounded-lg hover:bg-[#07204a] transition-colors whitespace-nowrap shrink-0 shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0a2d67]"
+            className="btn-3d-navy inline-flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0a2d67]"
           >
             <Lock className="w-3.5 h-3.5 shrink-0" />
             <span>Official Login</span>
@@ -82,7 +102,7 @@ export const PublicHeader: React.FC = () => {
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+            className="xl:hidden nav-3d inline-flex items-center justify-center w-11 h-11 rounded-lg text-slate-700 cursor-pointer"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -90,10 +110,10 @@ export const PublicHeader: React.FC = () => {
       </div>
 
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-slate-200 bg-white">
+        <div className="xl:hidden border-t border-slate-200 bg-gradient-to-b from-slate-50 to-white shadow-[0_14px_28px_-10px_rgba(15,23,42,0.18)]">
           <nav
             aria-label="Mobile Navigation"
-            className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1"
+            className="max-w-7xl mx-auto px-4 py-3.5 flex flex-col gap-2"
           >
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
@@ -104,10 +124,8 @@ export const PublicHeader: React.FC = () => {
                   end={item.to === '/'}
                   onClick={() => setMobileMenuOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'bg-[#0f3c85] text-white font-semibold'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-slate-950'
+                    `flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg text-sm font-semibold ${
+                      isActive ? 'nav-3d-active' : 'nav-3d text-slate-700'
                     }`
                   }
                 >
@@ -116,12 +134,27 @@ export const PublicHeader: React.FC = () => {
                 </NavLink>
               );
             })}
+
+            <a
+              href={APPOINTMENT_BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`mt-1 flex items-center justify-between gap-2.5 px-3.5 py-2.5 text-sm ${APPOINTMENT_3D_CLASSES}`}
+            >
+              <span className="inline-flex items-center gap-2.5">
+                <CalendarCheck className="w-4 h-4 shrink-0" />
+                <span>Appointment Booking</span>
+              </span>
+              <BlinkingStatusDot />
+            </a>
+
             <a
               href={OFFICIAL_WEB_APP_URL}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
-              className="mt-1 flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#0a2d67] hover:bg-[#07204a] transition-colors"
+              className="btn-3d-navy mt-1 flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg text-sm font-semibold"
             >
               <Lock className="w-4 h-4 shrink-0" />
               <span>Official Login</span>

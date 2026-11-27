@@ -9,8 +9,8 @@ export const NotFoundPage: React.FC = () => {
   });
 
   return (
-    <div className="bg-white py-24 px-4">
-      <div className="max-w-lg mx-auto border border-slate-200 rounded-xl p-8 text-center space-y-4">
+    <div className="bg-3d-stage py-24 px-4">
+      <div className="card-3d max-w-lg mx-auto rounded-2xl p-8 text-center space-y-4">
         <p className="font-mono-tabular text-xs font-semibold text-blue-800">404</p>
         <h1 className="font-display text-2xl font-bold text-slate-950">Page Not Found</h1>
         <p className="text-sm text-slate-600">
@@ -19,13 +19,13 @@ export const NotFoundPage: React.FC = () => {
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <Link
             to="/"
-            className="px-4 py-2.5 text-sm font-semibold text-white bg-blue-800 rounded-lg hover:bg-blue-900 transition-colors"
+            className="btn-3d-blue px-4 py-2.5 text-sm font-semibold rounded-lg"
           >
             Back to Home
           </Link>
           <Link
             to="/services"
-            className="px-4 py-2.5 text-sm font-medium text-slate-800 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+            className="btn-3d-white px-4 py-2.5 text-sm font-semibold text-slate-800 rounded-lg"
           >
             Explore Services
           </Link>

@@ -1,7 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Mail, MapPin, MessageCircle, Navigation, Phone } from 'lucide-react';
-import { formatFullAddress, OFFICIAL_WEB_APP_URL } from '../config/businessConfig';
+import {
+  APPOINTMENT_BOOKING_URL,
+  OFFICIAL_WEB_APP_URL,
+  formatFullAddress,
+} from '../config/businessConfig';
 import { useWebsiteSettings } from '../context/WebsiteSettingsContext';
 import { getShopMapsUrl, getWhatsAppUrl } from '../services/publicData';
 import { LogoMark } from './LogoMark';
@@ -21,12 +25,14 @@ export const PublicFooter: React.FC = () => {
   const mapsUrl = getShopMapsUrl(settings);
 
   return (
-    <footer className="bg-[#06214d] text-slate-200 border-t border-[#0c3270]">
+    <footer className="bg-gradient-to-b from-[#08295e] via-[#06214d] to-[#041738] text-slate-200 border-t-4 border-[#134696] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-0 lg:divide-x lg:divide-white/15">
           {/* Logo & Address */}
           <div className="lg:col-span-4 lg:pr-6 space-y-4">
-            <LogoMark variant="footer" />
+            <div className="inline-block rounded-xl shadow-[0_8px_18px_rgba(0,0,0,0.3)]">
+              <LogoMark variant="footer" />
+            </div>
             <div className="flex items-start gap-2.5 text-sm text-slate-200 leading-relaxed pt-1">
               <MapPin className="w-4 h-4 text-sky-300 shrink-0 mt-1" />
               <p>{formatFullAddress(settings)}</p>
@@ -37,9 +43,9 @@ export const PublicFooter: React.FC = () => {
           <div className="lg:col-span-3 lg:px-6 space-y-3 text-sm">
             <a
               href={`tel:${phoneClean}`}
-              className="flex items-center gap-2.5 text-white hover:text-sky-200 transition-colors"
+              className="flex items-center gap-2.5 text-white hover:text-sky-200 transition-colors group"
             >
-              <span className="w-7 h-7 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <span className="w-8 h-8 rounded-lg bg-gradient-to-b from-emerald-500 to-emerald-700 border border-emerald-400/50 border-b-[3px] border-b-emerald-900 shadow-md text-white flex items-center justify-center shrink-0 group-hover:-translate-y-0.5 transition-transform">
                 <Phone className="w-3.5 h-3.5" />
               </span>
               <span className="font-mono-tabular font-medium">{phone}</span>
@@ -48,18 +54,18 @@ export const PublicFooter: React.FC = () => {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2.5 text-white hover:text-sky-200 transition-colors"
+              className="flex items-center gap-2.5 text-white hover:text-sky-200 transition-colors group"
             >
-              <span className="w-7 h-7 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <span className="w-8 h-8 rounded-lg bg-gradient-to-b from-emerald-500 to-emerald-700 border border-emerald-400/50 border-b-[3px] border-b-emerald-900 shadow-md text-white flex items-center justify-center shrink-0 group-hover:-translate-y-0.5 transition-transform">
                 <MessageCircle className="w-3.5 h-3.5" />
               </span>
               <span className="font-mono-tabular font-medium">{whatsapp}</span>
             </a>
             <a
               href={`mailto:${email}`}
-              className="flex items-center gap-2.5 text-white hover:text-sky-200 transition-colors"
+              className="flex items-center gap-2.5 text-white hover:text-sky-200 transition-colors group"
             >
-              <span className="w-7 h-7 rounded-full bg-sky-500/20 text-sky-300 flex items-center justify-center shrink-0">
+              <span className="w-8 h-8 rounded-lg bg-gradient-to-b from-sky-400 to-blue-700 border border-sky-300/50 border-b-[3px] border-b-blue-950 shadow-md text-white flex items-center justify-center shrink-0 group-hover:-translate-y-0.5 transition-transform">
                 <Mail className="w-3.5 h-3.5" />
               </span>
               <span className="break-all font-medium">{email}</span>
@@ -72,25 +78,25 @@ export const PublicFooter: React.FC = () => {
               <h3 className="font-display font-semibold text-white">Quick Links</h3>
               <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
                 <li>
-                  <Link to="/" className="inline-flex items-center gap-1 hover:text-white">
+                  <Link to="/" className="inline-flex items-center gap-1 hover:text-white hover:translate-x-0.5 transition-all">
                     <ChevronRight className="w-3.5 h-3.5 text-sky-400" />
                     Home
                   </Link>
                 </li>
                 <li>
-                  <Link to="/about" className="inline-flex items-center gap-1 hover:text-white">
+                  <Link to="/about" className="inline-flex items-center gap-1 hover:text-white hover:translate-x-0.5 transition-all">
                     <ChevronRight className="w-3.5 h-3.5 text-sky-400" />
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link to="/services" className="inline-flex items-center gap-1 hover:text-white">
+                  <Link to="/services" className="inline-flex items-center gap-1 hover:text-white hover:translate-x-0.5 transition-all">
                     <ChevronRight className="w-3.5 h-3.5 text-sky-400" />
                     Services
                   </Link>
                 </li>
                 <li>
-                  <Link to="/feedback" className="inline-flex items-center gap-1 hover:text-white">
+                  <Link to="/feedback" className="inline-flex items-center gap-1 hover:text-white hover:translate-x-0.5 transition-all">
                     <ChevronRight className="w-3.5 h-3.5 text-sky-400" />
                     Feedback
                   </Link>
@@ -102,7 +108,18 @@ export const PublicFooter: React.FC = () => {
               <h3 className="font-display font-semibold text-white">Useful Links</h3>
               <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
                 <li>
-                  <Link to="/notices" className="inline-flex items-center gap-1 hover:text-white">
+                  <a
+                    href={APPOINTMENT_BOOKING_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-emerald-300 hover:text-emerald-200 hover:translate-x-0.5 transition-all font-medium"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Appointment Booking</span>
+                  </a>
+                </li>
+                <li>
+                  <Link to="/notices" className="inline-flex items-center gap-1 hover:text-white hover:translate-x-0.5 transition-all">
                     <ChevronRight className="w-3.5 h-3.5 text-sky-400" />
                     Notice Board
                   </Link>
@@ -110,14 +127,14 @@ export const PublicFooter: React.FC = () => {
                 <li>
                   <Link
                     to="/privacy-policy"
-                    className="inline-flex items-center gap-1 hover:text-white"
+                    className="inline-flex items-center gap-1 hover:text-white hover:translate-x-0.5 transition-all"
                   >
                     <ChevronRight className="w-3.5 h-3.5 text-sky-400" />
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/terms" className="inline-flex items-center gap-1 hover:text-white">
+                  <Link to="/terms" className="inline-flex items-center gap-1 hover:text-white hover:translate-x-0.5 transition-all">
                     <ChevronRight className="w-3.5 h-3.5 text-sky-400" />
                     Terms &amp; Conditions
                   </Link>
@@ -127,7 +144,7 @@ export const PublicFooter: React.FC = () => {
                     href={OFFICIAL_WEB_APP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 hover:text-white"
+                    className="inline-flex items-center gap-1 hover:text-white hover:translate-x-0.5 transition-all"
                   >
                     <ChevronRight className="w-3.5 h-3.5 text-sky-400" />
                     Official Login
@@ -144,7 +161,7 @@ export const PublicFooter: React.FC = () => {
               <a
                 href={`tel:${phoneClean}`}
                 aria-label="Call MUN COMPUTER"
-                className="w-9 h-9 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-xl bg-gradient-to-b from-blue-500 to-blue-700 border border-blue-400/60 border-b-[3px] border-b-blue-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_4px_10px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 active:translate-y-0.5 text-white flex items-center justify-center transition-all"
               >
                 <Phone className="w-4 h-4" />
               </a>
@@ -153,14 +170,14 @@ export const PublicFooter: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp MUN COMPUTER"
-                className="w-9 h-9 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-700 border border-emerald-400/60 border-b-[3px] border-b-emerald-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_4px_10px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 active:translate-y-0.5 text-white flex items-center justify-center transition-all"
               >
                 <MessageCircle className="w-4 h-4" />
               </a>
               <a
                 href={`mailto:${email}`}
                 aria-label="Email MUN COMPUTER"
-                className="w-9 h-9 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-xl bg-gradient-to-b from-red-500 to-red-700 border border-red-400/60 border-b-[3px] border-b-red-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_4px_10px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 active:translate-y-0.5 text-white flex items-center justify-center transition-all"
               >
                 <Mail className="w-4 h-4" />
               </a>
@@ -169,7 +186,7 @@ export const PublicFooter: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Google Maps Directions to MUN COMPUTER"
-                className="w-9 h-9 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 border border-amber-300/70 border-b-[3px] border-b-amber-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_4px_10px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 active:translate-y-0.5 text-slate-950 flex items-center justify-center transition-all"
               >
                 <Navigation className="w-4 h-4" />
               </a>
